@@ -3,14 +3,57 @@ package main
 import (
 	"regexp"
 	"strings"
+	"os"
 )
 
-var buildRE, _ = regexp.Compile(`^(.*\.go)\:(\d*)\:(.*)\n?$`)
+const RESET = "\x1b[0m"
 
-func buildOrTest(in string) (out string) {
-	matches := buildRE.FindStringSubmatch(in)
+var colors = map[string]string{
+	"black": "\x1b[30m",
+	"red": "\x1b[31m",
+	"green": "\x1b[32m",
+	"yellow": "\x1b[33m",
+	"blue": "\x1b[34m",
+	"magenta": "\x1b[35m",
+	"cyan": "\x1b[36m",
+	"white": "\x1b[37m",
+	"gray": "\x1b[90m",
+}
+
+func col(text string) string {
+	color := colors[strings.ToLower(os.Getenv("COLORGO_COL"))]
+	if color == "" {
+		color = colors["red"]
+	}
+	return color + text + RESET
+}
+
+func line(text string) string {
+	color := colors[strings.ToLower(os.Getenv("COLORGO_LINE"))]
+	if color == "" {
+		color = colors["red"]
+	}
+	return color + text + RESET
+}
+
+func file(text string) string {
+	color := colors[strings.ToLower(os.Getenv("COLORGO_FILE"))]
+	if color == "" {
+		color = colors["blue"]
+	}
+	return color + text + RESET
+}
+
+var re = regexp.MustCompile(`^(.*\.go)\:(\d+)\:(?:(\d+):)?(.*)\n?$`)
+
+func parse(in string) (out string) {
+	matches := re.FindStringSubmatch(in)
 	if len(matches) > 0 {
-		out = sgrBoldBlue(matches[1]) + ":" + sgrBoldRed(matches[2]) + ":" + matches[3] + "\n"
+		if matches[3] == "" {
+			out = file(matches[1]) + ":" + line(matches[2]) + ":" + matches[4] + "\n"
+		} else {
+			out = file(matches[1]) + ":" + line(matches[2]) + ":" + col(matches[3]) + ":" + matches[4] + "\n"		
+		}
 	} else {
 		if strings.HasSuffix(in, "\n") {
 			out = in
