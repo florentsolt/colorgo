@@ -69,9 +69,9 @@ func parse(in string) (out string) {
 	matches := re.FindStringSubmatch(in)
 	if len(matches) > 0 {
 		if matches[3] == "" {
-			out = file(matches[1]) + ":" + line(matches[2]) + " " + matches[4] + "\n"
+			out = file(matches[1]) + ":" + line(matches[2]) + matches[4] + "\n"
 		} else {
-			out = file(matches[1]) + ":" + line(matches[2]) + ":" + col(matches[3]) + " " + matches[4] + "\n"		
+			out = file(matches[1]) + ":" + line(matches[2]) + ":" + col(matches[3]) + matches[4] + "\n"		
 		}
 		if foundPrefix {
 			out = prefix(addPrefix) + out
