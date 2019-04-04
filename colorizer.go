@@ -44,6 +44,14 @@ func file(text string) string {
 	return color + text + RESET
 }
 
+func prefix(text string) string {
+	color := colors[strings.ToLower(os.Getenv("COLORGO_PREFIX"))]
+	if color == "" {
+		color = colors["gray"]
+	}
+	return color + text + RESET
+}
+
 var re = regexp.MustCompile(`^(.*\.go)\:(\d+)\:(?:(\d+):)?(.*)\n?$`)
 
 var trimPrefix = os.Getenv("COLORGO_TRIM_PREFIX")
@@ -54,7 +62,7 @@ func parse(in string) (out string) {
 		in = strings.TrimPrefix(in, trimPrefix)
 	}
 	if addPrefix != "" {
-		in = addPrefix + in
+		in = prefix(addPrefix) + in
 	}
 	matches := re.FindStringSubmatch(in)
 	if len(matches) > 0 {
