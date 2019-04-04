@@ -46,11 +46,15 @@ func file(text string) string {
 
 var re = regexp.MustCompile(`^(.*\.go)\:(\d+)\:(?:(\d+):)?(.*)\n?$`)
 
-var prefix = os.Getenv("COLORGO_PREFIX")
+var trimPrefix = os.Getenv("COLORGO_TRIM_PREFIX")
+var addPrefix = os.Getenv("COLORGO_ADD_PREFIX")
 
 func parse(in string) (out string) {
-	if prefix != "" {
-		in = strings.TrimPrefix(in, prefix)
+	if trimPrefix != "" {
+		in = strings.TrimPrefix(in, trimPrefix)
+	}
+	if addPrefix != "" {
+		in = addPrefix + in
 	}
 	matches := re.FindStringSubmatch(in)
 	if len(matches) > 0 {
