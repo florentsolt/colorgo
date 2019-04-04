@@ -58,11 +58,13 @@ var trimPrefix = os.Getenv("COLORGO_TRIM_PREFIX")
 var addPrefix = os.Getenv("COLORGO_ADD_PREFIX")
 
 func parse(in string) (out string) {
+	foundPrefix = false
+
 	if trimPrefix != "" {
-		in = strings.TrimPrefix(in, trimPrefix)
-	}
-	if addPrefix != "" {
-		in = prefix(addPrefix) + in
+		if strings.HasPrefix(in, trimPrefix) {
+			foundPrefix = true
+			in = strings.TrimPrefix(in, trimPrefix)
+		}
 	}
 	matches := re.FindStringSubmatch(in)
 	if len(matches) > 0 {
@@ -70,6 +72,9 @@ func parse(in string) (out string) {
 			out = file(matches[1]) + ":" + line(matches[2]) + " \t" + matches[4] + "\n"
 		} else {
 			out = file(matches[1]) + ":" + line(matches[2]) + ":" + col(matches[3]) + " \t" + matches[4] + "\n"		
+		}
+		if foundPrefix {
+			out = prefix(addPrefix) + out
 		}
 	} else {
 		if strings.HasSuffix(in, "\n") {
