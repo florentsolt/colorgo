@@ -58,11 +58,9 @@ var trimPrefix = os.Getenv("COLORGO_TRIM_PREFIX")
 var addPrefix = os.Getenv("COLORGO_ADD_PREFIX")
 
 func parse(in string) (out string) {
-	foundPrefix := false
 
 	if trimPrefix != "" {
 		if strings.HasPrefix(in, trimPrefix) {
-			foundPrefix = true
 			in = strings.TrimPrefix(in, trimPrefix)
 		}
 	}
