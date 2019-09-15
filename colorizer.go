@@ -1,23 +1,23 @@
 package main
 
 import (
+	"os"
 	"regexp"
 	"strings"
-	"os"
 )
 
 const RESET = "\x1b[0m"
 
 var colors = map[string]string{
-	"black": "\x1b[30m",
-	"red": "\x1b[31m",
-	"green": "\x1b[32m",
-	"yellow": "\x1b[33m",
-	"blue": "\x1b[34m",
+	"black":   "\x1b[30m",
+	"red":     "\x1b[31m",
+	"green":   "\x1b[32m",
+	"yellow":  "\x1b[33m",
+	"blue":    "\x1b[34m",
 	"magenta": "\x1b[35m",
-	"cyan": "\x1b[36m",
-	"white": "\x1b[37m",
-	"gray": "\x1b[90m",
+	"cyan":    "\x1b[36m",
+	"white":   "\x1b[37m",
+	"gray":    "\x1b[90m",
 }
 
 func col(text string) string {
@@ -71,9 +71,9 @@ func parse(in string) (out string) {
 		if matches[3] == "" {
 			out = file(matches[1]) + ":" + line(matches[2]) + matches[4] + "\n"
 		} else {
-			out = file(matches[1]) + ":" + line(matches[2]) + ":" + col(matches[3]) + matches[4] + "\n"		
+			out = file(matches[1]) + ":" + line(matches[2]) + ":" + col(matches[3]) + matches[4] + "\n"
 		}
-		if foundPrefix {
+		if addPrefix != "" {
 			out = prefix(addPrefix) + out
 		}
 	} else {
